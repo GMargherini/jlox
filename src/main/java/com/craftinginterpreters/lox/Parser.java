@@ -74,13 +74,31 @@ class Parser {
 	and an operand method handle to simplify this redundant code. */
 
 	private Expr comma() {
-		Expr expr = equality();//ternary();
+		Expr expr = assignment();//ternary();
 
 		while(match(COMMA)) {
 			Token operator = previous();
-			Expr right = equality();//ternary();
+			Expr right = assignment();//ternary();
 			expr = new Expr.Binary(expr, operator, right);
 		}
+		return expr;
+	}
+
+	private Expr assignment() {
+		Expr expr = equality();
+
+		if (match(EQUAL)) {
+			Token equals = previous();
+			Expr value = assignment();
+
+			if(expr instanceof Expr.Variable) {
+				Token name = ((Expr.Variable)expr).name;
+				return new Expr.Assign(name, value);
+			}
+
+			error(equals, "Invalid assignment target.");
+		}
+
 		return expr;
 	}
 /*
