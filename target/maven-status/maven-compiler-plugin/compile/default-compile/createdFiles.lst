@@ -4,8 +4,10 @@ com/craftinginterpreters/lox/Interpreter.class
 com/craftinginterpreters/lox/Stmt$Visitor.class
 com/craftinginterpreters/lox/Stmt$Var.class
 com/craftinginterpreters/lox/Stmt.class
+com/craftinginterpreters/lox/Expr$Assign.class
 com/craftinginterpreters/lox/Environment.class
 com/craftinginterpreters/lox/Expr$Variable.class
 com/craftinginterpreters/lox/Stmt$Expression.class
+com/craftinginterpreters/lox/Stmt$Block.class
 com/craftinginterpreters/lox/Stmt$Print.class
 com/craftinginterpreters/lox/Parser$1.class

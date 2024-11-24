@@ -34,15 +34,15 @@ public class Lox {
 	
 	private static void runPrompt() throws IOException {
 		InputStreamReader input = new InputStreamReader(System.in);
-	BufferedReader reader = new BufferedReader(input);
+		BufferedReader reader = new BufferedReader(input);
 
-	for(;;){
-		System.out.println("> ");
-		String line = reader.readLine();
-		if (line==null) break;
-		run(line);
-		hadError = false;
-	}
+		for(;;){
+			System.out.println("> ");
+			String line = reader.readLine();
+			if (line==null) break;
+			run(line);
+			hadError = false;
+		}
 	}
 
 	private static void run(String source) {
