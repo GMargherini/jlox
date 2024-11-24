@@ -5,11 +5,11 @@ class AstPrinter implements Expr.Visitor<String> {
     return expr.accept(this);
   }
 
-/*  @Override
+  @Override
   public String visitTernaryExpr(Expr.Ternary expr) {
-  	return parenthesize("conditional", expr.one, expr.two, expr.three);
+  	return parenthesize("conditional", expr.condition, expr.thenExpr, expr.elseExpr);
   }
-*/
+
   @Override
   public String visitLogicalExpr(Expr.Logical expr) {
   	return "";

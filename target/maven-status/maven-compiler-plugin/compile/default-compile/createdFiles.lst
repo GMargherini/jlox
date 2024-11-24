@@ -1,6 +1,6 @@
 com/craftinginterpreters/lox/RuntimeError.class
-com/craftinginterpreters/lox/Interpreter$1.class
 com/craftinginterpreters/lox/Interpreter.class
+com/craftinginterpreters/lox/Interpreter$1.class
 com/craftinginterpreters/lox/Stmt$Visitor.class
 com/craftinginterpreters/lox/Stmt$Var.class
 com/craftinginterpreters/lox/Stmt.class

@@ -2,6 +2,7 @@ package com.craftinginterpreters.lox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import static com.craftinginterpreters.lox.TokenType.*;
 
@@ -10,6 +11,7 @@ class Parser {
 	private static class ParseError extends RuntimeException {}
 	private final List<Token> tokens;
 	private int current = 0;
+	private boolean isInLoop = false;
 
 	Parser(List<Token> tokens) {
 		this.tokens = tokens;
@@ -40,11 +42,66 @@ class Parser {
 	}
 
 	private Stmt statement() {
+		if (match(FOR)) return forStatement();
 		if (match(IF)) return ifStatement();
 		if (match(PRINT)) return printStatement();
+		if (match(WHILE)) return whileStatement();
 		if (match(LEFT_BRACE)) return new Stmt.Block(block());
+		if (match(BREAK)) return breakStatement();
 		
 		return expressionStatement();
+	}
+	//TODO implement break statement
+	private Stmt breakStatement() {
+		consume(SEMICOLON, "Expect ';' after statement");
+		if (!isInLoop) error(peek(), "Break statement outside of loop");
+		
+		return new Stmt.Break(null);
+	}
+
+	private Stmt forStatement() {
+		isInLoop = true;
+		consume(LEFT_PAREN, "Expect '(' after 'for'.");
+	
+		Stmt initializer;
+		if (match(SEMICOLON)) {
+			initializer = null;
+		} else if (match(VAR)) {
+			initializer = varDeclaration();
+		} else {
+			initializer = expressionStatement();
+		}
+
+		Expr condition = null;
+		if (!check(SEMICOLON)) {
+			condition = expression();
+		}
+		consume(SEMICOLON, "Expect ';' after loop condition.");
+
+		Expr increment = null;
+		if (!check(RIGHT_PAREN)) {
+			increment = expression();
+		}
+		consume(RIGHT_PAREN, "Expect ')' after for clauses.");
+
+		Stmt body = statement();
+
+		if (increment != null) {
+			body = new Stmt.Block(
+				Arrays.asList(
+					body,
+					new Stmt.Expression(increment)));
+		}
+
+		if (condition == null) condition = new Expr.Literal(true);
+    	body = new Stmt.While(condition, body);
+
+		if (initializer != null) {
+			body = new Stmt.Block(Arrays.asList(initializer, body));
+		}
+
+		isInLoop = false;
+    	return body;
 	}
 
 	private Stmt ifStatement() {
@@ -79,6 +136,17 @@ class Parser {
 	    return new Stmt.Var(name, initializer);
 	}
 
+	private Stmt whileStatement() {
+		isInLoop = true;
+		consume(LEFT_PAREN, "Expect '(' after 'while'.");
+		Expr condition = expression();
+		consume(RIGHT_PAREN, "Expect ')' after condition.");
+		Stmt body = statement();
+		
+		isInLoop = false;
+		return new Stmt.While(condition, body);
+	}
+
 	private Stmt expressionStatement() {
 	    Expr expr = expression();
 	    consume(SEMICOLON, "Expect ';' after expression.");
@@ -101,7 +169,7 @@ class Parser {
 	and an operand method handle to simplify this redundant code. */
 
 	private Expr comma() {
-		Expr expr = assignment();//ternary();
+		Expr expr = assignment();
 
 		while(match(COMMA)) {
 			Token operator = previous();
@@ -112,7 +180,7 @@ class Parser {
 	}
 
 	private Expr assignment() {
-		Expr expr = or();//ternary();
+		Expr expr = ternary();//or();
 
 		if (match(EQUAL)) {
 			Token equals = previous();
@@ -128,19 +196,19 @@ class Parser {
 
 		return expr;
 	}
-/*
+
 	private Expr ternary() {
 		Expr expr = or();
-		if (match(QUESTION)) {
-			Token question = previous();
-			Expr one = expression();
-		  	Token comma = consume(COLON, "Expect ':' after expression.");
-		  	Expr two = expression();
-		 	return new Expr.Ternary(expr, question, one, comma, two);
+		while (match(QUESTION)) {
+			Expr thenBranch = comma();
+		  	consume(COLON, "Expect ':' after expression.");
+		  	Expr elseBranch = comma();
+		 	expr = new Expr.Ternary(expr, thenBranch, elseBranch);
 		}
-		throw error(peek(), "Expect expression.");
+		return expr;
+		//throw error(peek(), "Expect expression.");
 	}
-*/	
+	
 
 	private Expr or() {
 		Expr expr = and();
