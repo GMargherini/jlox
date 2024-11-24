@@ -1,9 +1,13 @@
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/AstPrinter.java
+/home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Break.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Environment.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Expr.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Interpreter.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Lox.java
+/home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/LoxCallable.java
+/home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/LoxFunction.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Parser.java
+/home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Return.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/RuntimeError.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Scanner.java
 /home/dolphin/Projects/jlox/src/main/java/com/craftinginterpreters/lox/Stmt.java
