@@ -2,8 +2,6 @@ package com.craftinginterpreters.lox;
 
 import java.util.List;
 
-import com.craftinginterpreters.lox.Stmt.Return;
-
 import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>,
@@ -61,14 +59,13 @@ class Interpreter implements Expr.Visitor<Object>,
 		Object right = evaluate(expr.right);
 
 		switch (expr.operator.type) {
-			case BANG:
-				return !isTruthy(right);
-			case MINUS:
+			case BANG -> {return !isTruthy(right);}
+			case MINUS ->{
 				checkNumberOperand(expr.operator, right);
 				return -(double)right;
+			}
+			default -> {return null;}
 		}
-		//Unreachable
-		return null;
 	}
 
 	@Override
@@ -182,7 +179,7 @@ class Interpreter implements Expr.Visitor<Object>,
 		Object value = null;
 		if (stmt.value != null) value = evaluate(stmt.value);
 
-		throw new com.craftinginterpreters.lox.Return(value);
+		throw new Return(value);
 	}
 
 	@Override
@@ -236,22 +233,27 @@ class Interpreter implements Expr.Visitor<Object>,
 		Object right = evaluate(expr.right);
 
 		switch (expr.operator.type) {
-			case GREATER:
+			case GREATER -> {
 				checkNumberOperands(expr.operator, left, right);
 		    	return (double)left > (double)right;
-		    case GREATER_EQUAL:
+			}
+		    case GREATER_EQUAL -> {
 		    	checkNumberOperands(expr.operator, left, right);
 			    return (double)left >= (double)right;
-			case LESS:
+			}
+			case LESS -> {
 				checkNumberOperands(expr.operator, left, right);
 			    return (double)left < (double)right;
-			case LESS_EQUAL:
+			}
+			case LESS_EQUAL -> {
 				checkNumberOperands(expr.operator, left, right);
 			    return (double)left <= (double)right;
-			case MINUS:
+			}
+			case MINUS -> {
 				checkNumberOperands(expr.operator, left, right);
 				return (double)left - (double)right;
-			case PLUS:
+			}
+			case PLUS -> {
 				if (left instanceof Double && right instanceof Double) {
 					return (double)left + (double)right;
 				}
@@ -263,23 +265,23 @@ class Interpreter implements Expr.Visitor<Object>,
 				}
 				throw new RuntimeError(expr.operator,
 				            "Operands must be two numbers or two strings.");
-			case SLASH:
+			}
+			case SLASH -> {
 				checkNumberOperands(expr.operator, left, right);
 				if ((double)right == 0) {
 					throw new RuntimeError(expr.operator, "Cannot divide by 0.");
 				}
 				return (double)left / (double)right;
-			case STAR:
+			}
+			case STAR -> {
 				checkNumberOperands(expr.operator, left, right);
 				return (double)left * (double)right;
-			case COMMA:
-				return right;
-			case BANG_EQUAL: return !isEqual(left, right);
-  	        case EQUAL_EQUAL: return isEqual(left, right);
+			}
+			case COMMA -> {return right;}
+			case BANG_EQUAL -> {return !isEqual(left, right);}
+  	        case EQUAL_EQUAL -> {return isEqual(left, right);}
+			default -> {return null;}
 		}
-
-		//Unrachable
-		return null;
 	}
 
 	@Override
