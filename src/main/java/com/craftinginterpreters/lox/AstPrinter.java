@@ -1,8 +1,10 @@
 package com.craftinginterpreters.lox;
 
+import com.craftinginterpreters.lox.Expr.Lambda;
+
 class AstPrinter implements Expr.Visitor<String> {
   String print(Expr expr) {
-    return expr.accept(this);
+    return "";
   }
 
   @Override
@@ -63,5 +65,11 @@ class AstPrinter implements Expr.Visitor<String> {
     builder.append(")");
 
     return builder.toString();
+  }
+
+  @Override
+  public String visitLambdaExpr(Lambda expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitLambdaExpr'");
   }
 }

@@ -11,8 +11,14 @@ class LoxFunction implements LoxCallable {
 		this.closure = closure;
 	}
 
+	LoxFunction(Expr.Lambda declaration, Environment closure) {
+		this.declaration = new Stmt.Function(null, declaration.params, declaration.body);
+		this.closure = closure;
+	}
+
 	@Override
 	public String toString() {
+		if(declaration.name == null) return "<lambda>";
 		return "<fn " + declaration.name.lexeme + ">";
   }
 

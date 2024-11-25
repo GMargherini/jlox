@@ -32,7 +32,9 @@ class Parser {
 
 	private Stmt declaration() {
 		try {
-			if (match(FUN)) return function("function");
+			if (match(FUN) && peek().type == IDENTIFIER) 
+				return function("function");
+
 			if (match(VAR)) return varDeclaration();
 
 			return statement();
@@ -168,7 +170,9 @@ class Parser {
 	}
 
 	private Stmt.Function function(String kind) {
-		Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
+		Token name = null;
+		if(peek().type == IDENTIFIER)
+			name = consume(IDENTIFIER, "Expect " + kind + " name.");
 		consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
 		List<Token> parameters = new ArrayList<>();
 		if (!check(RIGHT_PAREN)) {
@@ -368,13 +372,37 @@ class Parser {
 		if (match(IDENTIFIER)) {
 			return new Expr.Variable(previous());
 		}
+
+		if(match(FUN) || (peek().type == LEFT_PAREN && previous().type == FUN))
+			return lambda();
 		
 		if (match(LEFT_PAREN)) {
 			Expr expr = expression();
 			consume(RIGHT_PAREN, "Expect ')' after expression.");
 			return new Expr.Grouping(expr);
 		}
+		
 		throw error(peek(), "Expect expression.");
+	}
+
+	private Expr.Lambda lambda() {
+		consume(LEFT_PAREN, "Expect '(' before lambda parameters.");
+		List<Token> parameters = new ArrayList<>();
+			if (!check(RIGHT_PAREN)) {
+				do {
+				if (parameters.size() >= 255) {
+					error(peek(), "Can't have more than 255 parameters.");
+				}
+		
+				parameters.add(
+					consume(IDENTIFIER, "Expect parameter name."));
+				} while (match(COMMA));
+			}
+			consume(RIGHT_PAREN, "Expect ')' after parameters.");
+
+			consume(LEFT_BRACE, "Expect '{' before lambda body.");
+			List<Stmt> body = block();
+			return new Expr.Lambda(parameters, body);
 	}
 
 	private Token consume(TokenType type, String message) {

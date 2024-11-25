@@ -283,6 +283,12 @@ class Interpreter implements Expr.Visitor<Object>,
 	}
 
 	@Override
+	public Object visitLambdaExpr(Expr.Lambda expr){
+		LoxCallable function = new LoxFunction(expr, environment);
+		return function;
+	}
+
+	@Override
 	public Object visitCallExpr(Expr.Call expr) {
 		Object callee = evaluate(expr.callee);
 
@@ -304,5 +310,4 @@ class Interpreter implements Expr.Visitor<Object>,
 		}
 		return function.call(this, arguments);
 	}
-
 }
