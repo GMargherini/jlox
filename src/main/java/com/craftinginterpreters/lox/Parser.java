@@ -11,7 +11,7 @@ class Parser {
 	private static class ParseError extends RuntimeException {}
 	private final List<Token> tokens;
 	private int current = 0;
-	private boolean isInLoop = false;
+	//private boolean isInLoop = false;
 
 	Parser(List<Token> tokens) {
 		this.tokens = tokens;
@@ -32,6 +32,7 @@ class Parser {
 
 	private Stmt declaration() {
 		try {
+			if (match(CLASS)) return classDeclaration();
 			if (match(FUN) && peek().type == IDENTIFIER) 
 				return function("function");
 
@@ -42,6 +43,20 @@ class Parser {
 			synchronize();
 			return null;
 		}
+	}
+
+	private Stmt classDeclaration() {
+		Token name = consume(IDENTIFIER, "Expect class name.");
+		consume(LEFT_BRACE, "Expect '{' before class body.");
+	
+		List<Stmt.Function> methods = new ArrayList<>();
+		while (!check(RIGHT_BRACE) && !isAtEnd()) {
+		  methods.add(function("method"));
+		}
+	
+		consume(RIGHT_BRACE, "Expect '}' after class body.");
+	
+		return new Stmt.Class(name, methods);
 	}
 
 	private Stmt statement() {
@@ -59,13 +74,13 @@ class Parser {
 	private Stmt breakStatement() {
 		Token keyword = previous();
 		consume(SEMICOLON, "Expect ';' after statement");
-		if (!isInLoop) error(keyword, "Break statement outside of loop");
+		//if (!isInLoop) error(keyword, "Break statement outside of loop");
 		
 		return new Stmt.Break(keyword);
 	}
 
 	private Stmt forStatement() {
-		isInLoop = true;
+		//isInLoop = true;
 		consume(LEFT_PAREN, "Expect '(' after 'for'.");
 	
 		Stmt initializer;
@@ -105,7 +120,7 @@ class Parser {
 			body = new Stmt.Block(Arrays.asList(initializer, body));
 		}
 
-		isInLoop = false;
+		//isInLoop = false;
     	return body;
 	}
 
@@ -153,13 +168,13 @@ class Parser {
 	}
 
 	private Stmt whileStatement() {
-		isInLoop = true;
+		//isInLoop = true;
 		consume(LEFT_PAREN, "Expect '(' after 'while'.");
 		Expr condition = expression();
 		consume(RIGHT_PAREN, "Expect ')' after condition.");
 		Stmt body = statement();
 		
-		isInLoop = false;
+		//isInLoop = false;
 		return new Stmt.While(condition, body);
 	}
 
