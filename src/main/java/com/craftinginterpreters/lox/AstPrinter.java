@@ -1,6 +1,9 @@
 package com.craftinginterpreters.lox;
 
+import com.craftinginterpreters.lox.Expr.Get;
 import com.craftinginterpreters.lox.Expr.Lambda;
+import com.craftinginterpreters.lox.Expr.Set;
+import com.craftinginterpreters.lox.Expr.This;
 
 class AstPrinter implements Expr.Visitor<String> {
   String print(Expr expr) {
@@ -71,5 +74,23 @@ class AstPrinter implements Expr.Visitor<String> {
   public String visitLambdaExpr(Lambda expr) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitLambdaExpr'");
+  }
+
+  @Override
+  public String visitGetExpr(Get expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitGetExpr'");
+  }
+
+  @Override
+  public String visitSetExpr(Set expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitSetExpr'");
+  }
+
+  @Override
+  public String visitThisExpr(This expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitThisExpr'");
   }
 }
